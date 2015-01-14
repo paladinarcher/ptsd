@@ -38,7 +38,7 @@ class User extends PluginBase {
                 if(!$u) {
                     $this->_loginPage($buffer, "Doh!", "We couldn't log you in with that email and password... Try again?");
                 } else {
-                    header('Location: /');
+                    throw new \Exceptions\RunLastStep();
                 }
                 break;
         }

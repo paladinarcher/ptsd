@@ -2,8 +2,8 @@
 
 require_once('init.php');
 
-$mod = 'Plugins\User';
-$cmd = 'showLogin';
+$mod = 'Plugins\Main';
+$cmd = 'showDashboard';
 $args = array();
 $op = '';
 if(isset($_REQUEST['op']))   { $op = $_REQUEST['op'];     }

@@ -13,16 +13,6 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-    </head>
-
-    <body>
-
-        <div class="container">
-
-            {include file=$maintemplate}
-
-        </div> <!-- /container -->
-
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -36,5 +26,15 @@
         <![endif]-->
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="/js/ie10-workaround.js"></script>
+    </head>
+
+    <body>
+
+        <div class="container">
+
+            {include file=$maintemplate}
+
+        </div> <!-- /container -->
+
     </body>
 </html>

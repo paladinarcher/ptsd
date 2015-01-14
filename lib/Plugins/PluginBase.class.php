@@ -7,7 +7,7 @@ abstract class PluginBase {
     public static function GetActivePlugins($govnah) {
 
         $plugins = array();
-        $conn = \Database\Connection\Factory::Get()->query("SELECT Class, Pname FROM Plugins WHERE Enabled=1 AND UserLevel <= ". \Common\User::UserLevel()." ORDER BY Priority ASC");
+        $conn = \Database\Connection\Factory::Get()->query("SELECT Class, Pname FROM Plugins WHERE Enabled=1 ORDER BY Priority ASC"); //AND UserLevel <= ". \Common\User::UserLevel()."
         $pdata = $conn->resultset();
         foreach($pdata as $row) {
             $class = $row['Class'];
