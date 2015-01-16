@@ -3,7 +3,7 @@
                 <input type="hidden" name="mod" value="Plugins\User" />
                 <!-- <input type="hidden" name="cmd" value="doLogin" /> -->
                 <h2 class="form-signin-heading">Please sign in</h2>
-                {if isset($errormsg)}
+                {if isset($errormsg) && $errormsg}
                 <div class="alert alert-danger" role="alert"><strong>{$errortitle}</strong> {$errormsg}</div>
                 {/if}
                 <label for="inputEmail" class="sr-only">Email address</label>

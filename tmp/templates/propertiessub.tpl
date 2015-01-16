@@ -21,7 +21,7 @@
         $(document).ready(function () {
             $('div.propertyCard').click(function () {
                 console.log($(this).data('property'));
-                window.location = "?mod=Plugins\Main&cmd=showProperty&args[pid]="+$(this).data('property').ID;
+                window.location = "?mod=Plugins\\Main&cmd=showProperty&args[pid]="+$(this).data('property').ID;
             });
         });
       </script>

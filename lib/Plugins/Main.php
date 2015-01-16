@@ -20,8 +20,8 @@ class Main extends PluginBase {
     }
 
     public function Run($op, $args, &$buffer) {
+        if(!$this->_isMe($op)) { return true; }
         if(\Common\User::UserLevel() < 1000) { throw new \Exceptions\Authentication(); }
-        //if(!$this->_isMe($op)) { return true; }
         $subs = $this->_parseSubCommands($op);
         if(!isset($subs[1])) { $subs = array($subs, 'showDashboard'); }
         error_log("Running $op with ".print_r($args, true));

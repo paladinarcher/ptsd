@@ -37,11 +37,13 @@ class Governor {
     }
     protected function _runLastStep() {
         if(!$this->_lastStep) {
-            $this->registerStep('Plugins\Main-showDashboard', array());
+            $this->registerStep('Plugins\\Main-showDashboard', array());
         }
         return $this->Run($this->_lastStep['command'], $this->_lastStep['args']);
     }
     public function Run($command, $args) {
+        if(!$command) { $command = 'Plugins\\Main-showDashboard'; }
+        if(!is_array($args)) { $args = array($args); }
         $buffer = array();
         try {
             foreach($this->_plugins as $plugin) {
@@ -54,7 +56,7 @@ class Governor {
         } catch (\Exceptions\Authentication $ex) {
             error_log(print_r($ex, true));
             $this->registerStep($command, $args);
-            return $this->Run('Plugins\User-showLogin', array('errormsg'=>'You need to signin to see that page.', 'errortitle'=>'Oops!'));
+            return $this->Run('Plugins\\User-showLogin', array('errormsg'=>'You need to signin to see that page.', 'errortitle'=>'Oops!'));
         } catch (\Exceptions\RunLastStep $ex) {
             return $this->_runLastStep();
         }
