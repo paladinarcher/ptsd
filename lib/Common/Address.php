@@ -20,8 +20,11 @@ class Address extends \Database\Base {
     public static function TableName() { return "Address"; }
     public function Images() {
         if(!$this->_images) {
-            error_log(print_r($this, true));
-            $this->_images = \Common\Image::LoadBy(array('AddressID' => $this->_data['ID']), array('Weight'=>'DESC'));
+            try {
+                $this->_images = \Common\Image::LoadBy(array('AddressID' => $this->_data['ID']), array('Weight'=>'DESC'));
+            } catch(\Exceptions\ItemNotFound $ex) {
+                $this->_images = array();
+            }
         }
         return $this->_images;
     }
