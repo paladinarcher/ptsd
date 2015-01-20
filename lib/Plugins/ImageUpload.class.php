@@ -4,7 +4,7 @@ namespace Plugins;
 
 class ImageUpload extends PluginBase {
 
-	protected $_maxSize = 2048;
+	protected $_maxSize = 8192;
 
 	public function __construct($governor) {
 		parent::__construct("Image Uploader", $governor);
