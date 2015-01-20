@@ -24,7 +24,7 @@ abstract class Base {
         $ret = array();
         if($conn->execute()) {
             if($conn->rowCount() < 1) {
-                error_log(print_r($conn, true));
+                //error_log(print_r($conn, true));
                 throw new \Exceptions\ItemNotFound("Item not found in ".static::TableName().".");
             }
             while($row = $conn->fetch()) {
