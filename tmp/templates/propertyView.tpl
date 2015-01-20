@@ -9,6 +9,34 @@
         </li>
     </ul>
 </div>
+<div class="modal fade" id="AddressEdit" tabindex="-1" role="dialog" aria-labelledby="addressLavel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="addressLabel">Photo Upload</h4>
+      </div>
+      <div class="modal-body">
+        <form action="json.php" method="post" enctype="multipart/form-data" id="EditAddress">
+            <div class='form-group'>
+                <input type='hidden' name='mod' value='Plugins\Main' />
+                <input type='hidden' name='cmd' value='EditAddress' />
+                <input type='hidden' name='args[pid]' value='{$property.ID}' />
+                <label for="args[weight]">Make Default?</label>
+                <input type='checkbox' name='args[weight]' value='5000' /><br />
+                <label for="args[name]">Description</label>
+                <input type='text' name='args[name]' value='' /><br />
+            </div>
+        </form>
+        <div id="output"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="fotoUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -82,7 +110,7 @@ function beforeSubmit(){
         
         if( !$('#imageInput').val()) //check empty input filed
         {
-            $("#output").html("Are you kidding me?");
+            $("#output").html("Please select an image to upload first.");
             return false;
         }
         
