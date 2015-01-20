@@ -54,7 +54,7 @@ class Main extends PluginBase {
     protected function _dashboard(&$buffer) {
         $buffer['title'] = "Properties";
         $buffer['description'] = "This is the main PTSD Dashboard";
-        $buffer['properties'] = \Database\Connection\Factory::Get()->query("SELECT 
+        $set = \Database\Connection\Factory::Get()->query("SELECT 
 	A.`ID`,
 	A.`ParcelID`,
 	A.`TagLine`,
@@ -66,7 +66,7 @@ class Main extends PluginBase {
 	A.`Zip`,
 	A.`Zip4`,
 	GROUP_CONCAT(DISTINCT CONCAT(P.`First`, ' ', P.`Last`) ORDER BY AP.`StartTime` ASC SEPARATOR ', ') AS `Owners`,
-	GROUP_CONCAT(DISTINCT AI.`FileName` ORDER BY AI.`Weight` ASC SEPARATOR ', ') AS ImageFiles,
+	GROUP_CONCAT(DISTINCT AI.`File` ORDER BY AI.`Weight` ASC SEPARATOR ', ') AS ImageFiles,
 	S.`StartedOn`,
 	S.`AssignedTo`,
 	S.`Name`,
@@ -77,12 +77,17 @@ FROM
 	LEFT JOIN AddressToPerson AP ON (A.`ID` = AP.`AddressID` AND AP.`EndTime` IS NULL)
 	LEFT JOIN Person P ON (AP.`PersonID` = P.`ID`)
 	-- LEFT JOIN Relationships R ON (AP.`RelationShipID` = R.`ID`)
-	LEFT JOIN AddressImage AI ON (A.`ID` = AI.`AddressID` AND AI.`Weight` > 1000)
+	LEFT JOIN Image AI ON (A.`ID` = AI.`AddressID`)
 	LEFT JOIN Step S ON (A.`ID` = S.`AddressID` AND S.`StartedOn` IS NOT NULL AND S.`CompletedOn` IS NULL)
 WHERE
 	1=1
 GROUP BY 
 	A.`ID`")->resultSet();
+        $buffer['properties'] = array();
+        foreach($set as $s) {
+            $s['ImageFile'] = explode(', ', $s['ImageFiles']);
+            $buffer['properties'][] = $s;
+        }
         $this->_govnah->Serializer()->SetOption('subpage', 'tmp/templates/propertiessub.tpl');
     }
 }
