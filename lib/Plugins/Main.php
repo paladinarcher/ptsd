@@ -77,7 +77,7 @@ FROM
 	LEFT JOIN AddressToPerson AP ON (A.`ID` = AP.`AddressID` AND AP.`EndTime` IS NULL)
 	LEFT JOIN Person P ON (AP.`PersonID` = P.`ID`)
 	-- LEFT JOIN Relationships R ON (AP.`RelationShipID` = R.`ID`)
-	LEFT JOIN AddressImage AI ON (A.`ID` = AI.`AddressID`)
+	LEFT JOIN AddressImage AI ON (A.`ID` = AI.`AddressID` AND AI.`Weight` > 1000)
 	LEFT JOIN Step S ON (A.`ID` = S.`AddressID` AND S.`StartedOn` IS NOT NULL AND S.`CompletedOn` IS NULL)
 WHERE
 	1=1

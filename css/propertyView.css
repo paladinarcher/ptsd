@@ -15,3 +15,24 @@ and open the template in the editor.
     text-transform: lowercase;
     font-style: italic;
 }
+ul.propertyImages {
+    float:left;
+    list-style-type: none;
+    margin: 0 20px 20px 0;
+    padding: 0;
+}
+ul.propertyImages li {
+    padding: 0;
+    cursor: pointer;
+}
+ul.propertyImages img {
+    height: 84px;
+    width: 150px;
+}
+ul.propertyImages li:first-child img {
+    height: 280px;
+    width: 500px;
+}
+.addImage {
+    background-color: #E0E0E0;
+}

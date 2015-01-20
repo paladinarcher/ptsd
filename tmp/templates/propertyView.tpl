@@ -1,5 +1,14 @@
 <link href="css/propertyView.css" rel="stylesheet">
-<div class=''></div>
+<div class='PropertyInfo'>
+    <ul class='propertyImages' id='propertyImages'>
+        {foreach from=$property.images item=image}
+            <li><img src='images/properties/{$image.File}' title='{$image.Name}'/></li>
+        {/foreach}
+        <li id='addImage' class='addImage'>
+            <img src='images/add-image.png' />
+        </li>
+    </ul>
+</div>
 <div class="modal fade" id="fotoUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -8,16 +17,25 @@
         <h4 class="modal-title" id="myModalLabel">Photo Upload</h4>
       </div>
       <div class="modal-body">
-        <form action="ajax.php" method="post" enctype="multipart/form-data" id="MyUploadForm">
-        <input name="image_file" id="imageInput" type="file" />
-        <input type="submit" id="submit-btn" value="Upload" class="btn btn-primary" />
-        <img src="images/ajax-loader.gif" id="loading-img" style="display:none;" alt="Please Wait"/>
+        <form action="json.php" method="post" enctype="multipart/form-data" id="MyUploadForm">
+            <div class='form-group'>
+                <input type='hidden' name='mod' value='Plugins\ImageUpload' />
+                <input type='hidden' name='cmd' value='UploadImages' />
+                <input type='hidden' name='args[pid]' value='{$property.ID}' />
+                <input name="images[]" id="imageInput" type="file" />
+                <label for="args[weight]">Make Default?</label>
+                <input type='checkbox' name='args[weight]' value='5000' /><br />
+                <label for="args[name]">Description</label>
+                <input type='text' name='args[name]' value='' /><br />
+                <input type="submit" id="submit-btn" value="Upload" class="btn btn-primary" />
+                <img src="images/ajax-loader.gif" id="loading-img" style="display:none;" alt="Please Wait"/>
+            </div>
         </form>
         <div id="output"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Upload</button>
+        <!--<button type="button" class="btn btn-primary">Upload</button>-->
       </div>
     </div>
   </div>
@@ -27,11 +45,30 @@
 <script type="text/javascript">
 $(document).ready(function() { 
     var options = { 
-            target:   '#output',   // target element(s) to be updated with server response 
+            //target:   '#output',   // target element(s) to be updated with server response 
+            dataType:'json',
             beforeSubmit:  beforeSubmit,  // pre-submit callback 
-            resetForm: true        // reset the form after successful submit 
+            resetForm: true,        // reset the form after successful submit 
+            success: function (responseTxt) {
+                $('#submit-btn').show(); //hide submit button
+                $('#loading-img').hide(); //hide submit button
+                $("#output").html("Upload successful."); 
+                for(var img in responseTxt) {
+                    var li = $('<li><img src="'+responseTxt[img].success+'" title="'+responseTxt[img].info.Name+'" /></li>');
+                    var bTarget = $('#propertyImages li:'+((responseTxt[img].info.Weight+0 > 1000) ? 'first':'last'));
+                    bTarget.before(li);
+                }
+            }
         }; 
-        
+    $('#propertyImages li').click(function () {
+        if($(this).hasClass('addImage')) {
+            $('#fotoUpload').modal({
+                
+            }).modal('show');
+        } else {
+            
+        }
+    });
      $('#MyUploadForm').submit(function() { 
             $(this).ajaxSubmit(options);  //Ajax Submit form            
             // return false to prevent standard browser submit and page navigation 
@@ -46,7 +83,7 @@ function beforeSubmit(){
         if( !$('#imageInput').val()) //check empty input filed
         {
             $("#output").html("Are you kidding me?");
-            return false
+            return false;
         }
         
         var fsize = $('#imageInput')[0].files[0].size; //get file size

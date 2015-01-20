@@ -14,5 +14,3 @@ if(isset($_REQUEST['args'])) { $args = $_REQUEST['args']; }
 $gov = new \Command\Governor();
 $gov->Serializer(new \Text\Serializing\Smarty('tmp/templates/main.tpl'));
 $gov->Display(($op ? $op : $mod.($cmd ? '-'.$cmd : '')), $args);
-
-?>

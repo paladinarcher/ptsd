@@ -4,13 +4,20 @@ namespace Database;
 
 abstract class Base {
 
-    public static function LoadBy(array $whereArray) {
+    public static function LoadBy(array $whereArray, array $orderBy = array()) {
         $sql = "SELECT * FROM ".static::TableName()." WHERE ";
         foreach(array_keys($whereArray) as $col) {
             $sql .= "`$col` = :$col AND ";
         }
-        $sql = rtrim($sql, ' AND ');
-        $conn = Connection\Factory::Get()->query($sql);
+        $sql = preg_replace('/ AND $/', '', $sql);
+        if($orderBy) {
+            $sql .= " ORDER BY ";
+            foreach($orderBy as $oName=>$oVal) {
+                $sql .= "$oName $oVal, ";
+            }
+            $sql = preg_replace('/, $/', '', $sql);
+        }
+        $conn = Connection\Factory::Get()->query($sql); error_log($sql);
         foreach($whereArray as $col => $val) {
             $conn->bind(':'.$col, $val);
         }
@@ -68,6 +75,10 @@ abstract class Base {
             #$q->debugDumpParams();
             if($conn->execute()) {
                 if($conn->rowCount() < 1) { error_log(" ZERO ROWS AFFECTED! "); }
+                if(!$this->ID) {
+                    $lastId = $conn->lastInsertId();
+                    $this->ID = $lastId;
+                }
                 error_log(print_r($conn->errorInfo(), true));
                 $this->_data = array_merge($this->_data, $this->_nData);
                 $this->_nData = array();
@@ -80,7 +91,8 @@ abstract class Base {
     public function Dirty() { return !empty($this->_nData); }
     public function __isset($name) { return isset($this->_data[$name]); }
     public function __unset($name) { unset($this->_data[$name]); }
-    public function ToArray() { return array_merge($this->_data, $this->_nData); }
+    public function ToArray() { return $this->_toArray(array_merge($this->_data, $this->_nData)); }
+    protected function _toArray(array $array) { return $array; }
     protected function _where() {
         $where = '';
         $count = 0;

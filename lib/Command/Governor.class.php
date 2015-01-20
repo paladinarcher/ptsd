@@ -47,7 +47,7 @@ class Governor {
         $buffer = array();
         try {
             foreach($this->_plugins as $plugin) {
-                error_log("running $command with ".print_r($args, true));
+                //error_log("running $command with ".print_r($args, true));
                 $out = $plugin->Run($command, $args, $buffer);
                 if(!$out) {
                     break;

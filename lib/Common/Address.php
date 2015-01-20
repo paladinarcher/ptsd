@@ -18,10 +18,24 @@ class Address extends \Database\Base {
     protected $_images;
     protected $_steps;
     public static function TableName() { return "Address"; }
-    public static function Persons() {
+    public function Images() {
+        if(!$this->_images) {
+            error_log(print_r($this, true));
+            $this->_images = \Common\Image::LoadBy(array('AddressID' => $this->_data['ID']), array('Weight'=>'DESC'));
+        }
+        return $this->_images;
+    }
+    public function Persons() {
         if(!$this->_persons) {
             
         }
         return $this->_persons;
+    }
+    protected function _toArray(array $array) {
+        $array['images'] = array();
+        foreach($this->Images() as $img) {
+            $array['images'][] = $img->ToArray();
+        }
+        return $array;
     }
 }
