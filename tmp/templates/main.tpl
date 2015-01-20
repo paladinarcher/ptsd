@@ -25,7 +25,7 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="/js/ie10-workaround.js"></script>
+        <script src="js/ie10-workaround.js"></script>
     </head>
 
     <body>
