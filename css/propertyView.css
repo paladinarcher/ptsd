@@ -22,12 +22,17 @@ ul.propertyImages {
     padding: 0;
 }
 ul.propertyImages li {
-    padding: 0;
+    margin: 5px 0 0 0;
     cursor: pointer;
+    float:left;
+    clear:left;
 }
 ul.propertyImages img {
     height: 84px;
     width: 150px;
+}
+ul.propertyImages li:first-child {
+    margin:0;
 }
 ul.propertyImages li:first-child img {
     height: 280px;

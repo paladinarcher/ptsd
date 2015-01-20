@@ -132,7 +132,7 @@ class Session {
         $old = time() - $max;
 
         // Set query
-        $this->_db->query('DELETE * FROM PhpSessions WHERE Access < :old');
+        $this->_db->query('DELETE FROM PhpSessions WHERE Access < :old');
 
         // Bind data
         $this->_db->bind(':old', $old);
