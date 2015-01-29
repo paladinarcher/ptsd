@@ -1,4 +1,9 @@
 <link href="css/propertyView.css" rel="stylesheet">
+<div id="propertyLinks">
+    <div class="link trulia"><a href="http://www.trulia.com/submit_search/?hsb=1&tst=h&locationId=&pid=&propertyIndex=&ac_index=&ac_entered_query=&topnav_extra=&display=&q=&search={$property.HouseNumber}+{$property.Street}+{$property.City}%2C+{$property.State}+{$property.Zip}" target="_blank"><img src="images/icon_trulia.png" alt="Trulia" /></a></div>
+    <div class="link zillow"><a href="http://www.zillow.com/homes/{$property.HouseNumber}-{$property.Street}-{$property.City}%2C-{$property.State}-{$property.Zip}_rb/" target="_blank"><img src="images/icon_zillow.png" alt="Zillow" /></a></div>
+    <div class="link county"></div>
+</div>
 <div class='PropertyInfo'>
     <ul class='propertyImages' id='propertyImages'>
         {foreach from=$property.images item=image}
@@ -14,7 +19,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="addressLabel">Photo Upload</h4>
+        <h4 class="modal-title" id="addressLabel">Edit Address Information</h4>
       </div>
       <div class="modal-body">
         <form action="json.php" method="post" enctype="multipart/form-data" id="EditAddress">
@@ -22,8 +27,8 @@
                 <input type='hidden' name='mod' value='Plugins\Main' />
                 <input type='hidden' name='cmd' value='EditAddress' />
                 <input type='hidden' name='args[pid]' value='{$property.ID}' />
-                <label for="args[weight]">Make Default?</label>
-                <input type='checkbox' name='args[weight]' value='5000' /><br />
+                <label for="args[weight]">Address</label>
+                <input type='text' name='args[weight]' value='5000' /><br />
                 <label for="args[name]">Description</label>
                 <input type='text' name='args[name]' value='' /><br />
             </div>
@@ -88,15 +93,18 @@ $(document).ready(function() {
                 }
             }
         }; 
+    $('.page-header').click(function () {
+        $('#AddressEdit').modal('show');
+    });
     $('#propertyImages li').click(function () {
         if($(this).hasClass('addImage')) {
-            $('#fotoUpload').modal({
-                
-            }).modal('show');
+            $('#fotoUpload').modal('show');
         } else {
             
         }
     });
+    $('#fotoUpload').modal({ show:false });
+    $('#AddressEdit').modal({ show:false });
      $('#MyUploadForm').submit(function() { 
             $(this).ajaxSubmit(options);  //Ajax Submit form            
             // return false to prevent standard browser submit and page navigation 

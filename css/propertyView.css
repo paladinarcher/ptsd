@@ -7,6 +7,20 @@ and open the template in the editor.
     Created on : Jan 13, 2015, 6:34:57 PM
     Author     : Jay
 */
+.page-header {
+    cursor: pointer;
+}
+.page-header:hover {
+    background-color: #F0F0F0;
+}
+#propertyLinks {
+    position: absolute;
+    right:0px;
+    top:50px;
+}
+#propertyLinks .link {
+    float:right;
+}
 .page-header h1{
     margin-bottom: 0;
 }

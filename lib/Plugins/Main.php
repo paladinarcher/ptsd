@@ -66,7 +66,7 @@ class Main extends PluginBase {
 	A.`Zip`,
 	A.`Zip4`,
 	GROUP_CONCAT(DISTINCT CONCAT(P.`First`, ' ', P.`Last`) ORDER BY AP.`StartTime` ASC SEPARATOR ', ') AS `Owners`,
-	GROUP_CONCAT(DISTINCT AI.`File` ORDER BY AI.`Weight` ASC SEPARATOR ', ') AS ImageFiles,
+	GROUP_CONCAT(DISTINCT AI.`File` ORDER BY AI.`Weight` DESC SEPARATOR ', ') AS ImageFiles,
 	S.`StartedOn`,
 	S.`AssignedTo`,
 	S.`Name`,

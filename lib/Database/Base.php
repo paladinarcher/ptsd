@@ -17,7 +17,7 @@ abstract class Base {
             }
             $sql = preg_replace('/, $/', '', $sql);
         }
-        $conn = Connection\Factory::Get()->query($sql); error_log($sql);
+        $conn = Connection\Factory::Get()->query($sql);
         foreach($whereArray as $col => $val) {
             $conn->bind(':'.$col, $val);
         }
