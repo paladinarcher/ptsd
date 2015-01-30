@@ -4,10 +4,10 @@
     <div class="link zillow"><a href="http://www.zillow.com/homes/{$property.HouseNumber}-{$property.Street}-{$property.City}%2C-{$property.State}-{$property.Zip}_rb/" target="_blank"><img src="images/icon_zillow.png" alt="Zillow" /></a></div>
     <div class="link county"></div>
 </div>
-<div class='PropertyInfo'>
+<div class='PropertyInfo' data-property="{$property|json_encode}">
     <ul class='propertyImages' id='propertyImages'>
         {foreach from=$property.images item=image}
-            <li><img src='images/properties/{$image.File}' title='{$image.Name}'/></li>
+            <li><a target="_blank" href="images/properties/{$image.File}"><img src='images/properties/thumb_{$image.File}' title='{$image.Name}'/></a></li>
         {/foreach}
         <li id='addImage' class='addImage'>
             <img src='images/add-image.png' />
@@ -100,7 +100,7 @@ $(document).ready(function() {
         if($(this).hasClass('addImage')) {
             $('#fotoUpload').modal('show');
         } else {
-            
+            $(this).data('imgsrc');
         }
     });
     $('#fotoUpload').modal({ show:false });
