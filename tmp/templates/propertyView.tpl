@@ -27,10 +27,43 @@
                 <input type='hidden' name='mod' value='Plugins\Main' />
                 <input type='hidden' name='cmd' value='EditAddress' />
                 <input type='hidden' name='args[pid]' value='{$property.ID}' />
-                <label for="args[weight]">Address</label>
-                <input type='text' name='args[weight]' value='5000' /><br />
-                <label for="args[name]">Description</label>
-                <input type='text' name='args[name]' value='' /><br />
+                <div class='form-group'>
+                    <label for="args[state]" style='width:100px;'>Tag Line</label>
+                    <input type='text' name='args[TagLine]' value='{$property.TagLine}' class="form-control" />
+                </div>
+                <div class='form-group'>
+                    <label for="args[housenumber]" style='width:100px;'>Address</label>
+                    <input type='text' name='args[street]' value='{$property.HouseNumber} {$property.Street}' class="form-control" />
+                </div>
+                <div class='form-group'>
+                    <label for="args[parcelid]" style='width:100px;'>Parcel ID</label>
+                    <input type='text' name='args[ParcelID]' value='{$property.ParcelID}' class="form-control" />
+                </div>
+                <div class='form-group'>
+                    <label for="args[city]" style='width:100px;'>City</label>
+                    <input type='text' name='args[City]' value='{$property.City}' class="form-control" />
+                </div>
+                <div class='form-group'>
+                    <div class='col-sm-2'>
+                        <label for="args[state]" style='width:100px;'>State</label>
+                        <input type='text' name='args[State]' value='{$property.State}' class="form-control" />
+                    </div>
+                    <div class='col-sm-4'>
+                        <label for="args[zip]" style='width:100px;'>Zip Code</label>
+                        <input type='text' name='args[Zip]' value='{$property.Zip}{if $property.Zip4}-{$property.Zip4}{/if}' class="form-control" />    
+                    </div>
+                    <div class='col-sm-6'>
+                        <label for="args[county]" style='width:100px;'>County</label>
+                        <input type='text' name='args[County]' value='{$property.County}' class="form-control" />
+                    </div>
+                </div>
+                <div class='form-group'>
+                    
+                </div>
+                <div class='form-group'>
+                    <label for="args[legaldesc]">Legal Description</label>
+                    <textarea name='args[LegalDescription]' class="form-control" style='width:100%;height:200px;'>{$property.LegalDescription}</textarea>
+                </div>
             </div>
         </form>
         <div id="output"></div>

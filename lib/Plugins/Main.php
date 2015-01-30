@@ -44,6 +44,25 @@ class Main extends PluginBase {
                 $buffer['property'] = $p->ToArray();
                 $this->_govnah->Serializer()->SetOption('subpage', 'tmp/templates/propertyView.tpl');
                 break;
+            case "EditAddress":
+                try {
+                    $a = new \Common\Address($args['pid']);
+                    error_log(print_r($a, true)."=>".print_r($args, true));
+                    $a->TagLine = $args['TagLine'];
+                    $a->HouseNumber = $args['HouseNumber'];
+                    $a->Street = $args['Street'];
+                    $a->City = $args['City'];
+                    $a->State = $args['State'];
+                    $a->Zip = $args['Zip'];
+                    $a->Zip4 = $args['Zip4'];
+                    $a->LegalDescription = $args['LegalDescription'];
+                    $a->County = $a['County'];
+                    error_log("After altering: ".print_r($a, true));
+                } catch (Exception $ex) {
+                    error_log(print_r($ex, true));
+                    throw $ex;
+                }
+                break;
             case "showDashboard":
             default:
                 $this->_dashboard($buffer);
