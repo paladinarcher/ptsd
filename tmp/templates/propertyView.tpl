@@ -26,35 +26,39 @@
             <div class='form-group'>
                 <input type='hidden' name='mod' value='Plugins\Main' />
                 <input type='hidden' name='cmd' value='EditAddress' />
+                <input type="hidden" name="args[HouseNumber]" value="{$property.HouseNumber}" />
+                <input type="hidden" name="args[Street]" value="{$property.Street}" />
+                <input type="hidden" name="args[Zip]" value="{$property.Zip}" />
+                <input type="hidden" name="args[Zip4]" value="{$property.Zip4}" />
                 <input type='hidden' name='args[pid]' value='{$property.ID}' />
                 <div class='form-group'>
                     <label for="args[state]" style='width:100px;'>Tag Line</label>
-                    <input type='text' name='args[TagLine]' value='{$property.TagLine}' class="form-control" />
+                    <input type='text' name='args[TagLine]' value='{$property.TagLine}' class="form-control" style="text-transform: uppercase" />
                 </div>
                 <div class='form-group'>
                     <label for="args[housenumber]" style='width:100px;'>Address</label>
-                    <input type='text' name='args[street]' value='{$property.HouseNumber} {$property.Street}' class="form-control" />
+                    <input type='text' id="tmpstreet" name='args[tmpstreet]' value='{$property.HouseNumber} {$property.Street}' class="form-control" style="text-transform: uppercase" />
                 </div>
                 <div class='form-group'>
                     <label for="args[parcelid]" style='width:100px;'>Parcel ID</label>
-                    <input type='text' name='args[ParcelID]' value='{$property.ParcelID}' class="form-control" />
+                    <input type='text' name='args[ParcelID]' value='{$property.ParcelID}' class="form-control" style="text-transform: uppercase" />
                 </div>
                 <div class='form-group'>
                     <label for="args[city]" style='width:100px;'>City</label>
-                    <input type='text' name='args[City]' value='{$property.City}' class="form-control" />
+                    <input type='text' name='args[City]' value='{$property.City}' class="form-control" style="text-transform: uppercase" />
                 </div>
                 <div class='form-group'>
                     <div class='col-sm-2'>
                         <label for="args[state]" style='width:100px;'>State</label>
-                        <input type='text' name='args[State]' value='{$property.State}' class="form-control" />
+                        <input type='text' name='args[State]' value='{$property.State}' class="form-control" style="text-transform: uppercase" />
                     </div>
                     <div class='col-sm-4'>
                         <label for="args[zip]" style='width:100px;'>Zip Code</label>
-                        <input type='text' name='args[Zip]' value='{$property.Zip}{if $property.Zip4}-{$property.Zip4}{/if}' class="form-control" />    
+                        <input type='text' name='args[zips]' value='{$property.Zip}{if $property.Zip4}-{$property.Zip4}{/if}' class="form-control" style="text-transform: uppercase" />    
                     </div>
                     <div class='col-sm-6'>
                         <label for="args[county]" style='width:100px;'>County</label>
-                        <input type='text' name='args[County]' value='{$property.County}' class="form-control" />
+                        <input type='text' name='args[County]' value='{$property.County}' class="form-control" style="text-transform: uppercase" />
                     </div>
                 </div>
                 <div class='form-group'>
@@ -62,7 +66,7 @@
                 </div>
                 <div class='form-group'>
                     <label for="args[legaldesc]">Legal Description</label>
-                    <textarea name='args[LegalDescription]' class="form-control" style='width:100%;height:200px;'>{$property.LegalDescription}</textarea>
+                    <textarea name='args[LegalDescription]' class="form-control" style='text-transform: uppercase;width:100%;height:200px;'>{$property.LegalDescription}</textarea>
                 </div>
             </div>
         </form>
@@ -70,7 +74,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" id="SaveAddress" data-loading-text="Saving...">Save</button>
       </div>
     </div>
   </div>
@@ -138,6 +142,38 @@ $(document).ready(function() {
     });
     $('#fotoUpload').modal({ show:false });
     $('#AddressEdit').modal({ show:false });
+    $('#SaveAddress').click(function () {
+        $('#EditAddress input,textarea').each(function () { if(this.name.substring(0,5) == 'args[') { this.value = this.value.toUpperCase(); } });
+        var fullStreet = $('#tmpstreet').val().trim();
+        $('input[name="args[HouseNumber]"]').val(fullStreet.substring(0, fullStreet.indexOf(' ')));
+        $('input[name="args[Street]"]').val(fullStreet.substring(fullStreet.indexOf(' ')+1));
+        var zips = $('input[name="args[zips]"]').val().split('-');
+        $('input[name="args[Zip]"]').val(zips[0]);
+        if(zips.length > 1) {
+            $('input[name="args[Zip4]"]').val(zips[1]);
+        }
+        $('#SaveAddress').button('loading');
+        $('#EditAddress').submit();
+    });
+    $('#EditAddress').submit(function () {
+        $(this).ajaxSubmit({
+            //target:   '#output',   // target element(s) to be updated with server response 
+            dataType:'json',
+            beforeSubmit:  function (arr, $form, options) {
+                console.log(arr, $form, options); 
+            },  // pre-submit callback 
+            resetForm: false,        // reset the form after successful submit 
+            success: function (responseTxt) {
+                
+                $('#SaveAddress').button('reset');
+                $('#AddressEdit').modal('hide');
+                console.log(responseTxt);
+                
+                location.reload();
+            }
+        });
+        return false;
+    });
      $('#MyUploadForm').submit(function() { 
             $(this).ajaxSubmit(options);  //Ajax Submit form            
             // return false to prevent standard browser submit and page navigation 

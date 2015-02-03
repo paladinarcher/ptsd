@@ -35,12 +35,14 @@ class Connection {
             $this->error = $e->getMessage();
         }
     }
-    
+    public function quote($value) { return $this->dbh->quote($value); }
     public function query($query){
         $this->stmt = $this->dbh->prepare($query);
         return $this;
     }
     public function bind($param, $value, $type = null){
+        //if (is_null($type)) { $this->stmt->bindValue($param, $value); }
+        //else { $this->stmt->bindValue($param, $value, $type); }
         if (is_null($type)) {
             switch (true) {
                 case is_int($value):
@@ -54,6 +56,7 @@ class Connection {
                     break;
                 default:
                     $type = \PDO::PARAM_STR;
+                    //$value = $this->quote($value);
             }
         }
         $this->stmt->bindValue($param, $value, $type);
@@ -63,6 +66,7 @@ class Connection {
         return true;
     }
     public function execute(){
+        error_log("Executing ".print_r($this->stmt,true));
         return $this->stmt->execute();
     }
     public function resultset(){

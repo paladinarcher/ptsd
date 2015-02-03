@@ -47,8 +47,9 @@ class Main extends PluginBase {
             case "EditAddress":
                 try {
                     $a = new \Common\Address($args['pid']);
-                    error_log(print_r($a, true)."=>".print_r($args, true));
+                    error_log("Input is ... ".print_r($args, true));
                     $a->TagLine = $args['TagLine'];
+                    $a->ParcelID = $args['ParcelID'];
                     $a->HouseNumber = $args['HouseNumber'];
                     $a->Street = $args['Street'];
                     $a->City = $args['City'];
@@ -56,7 +57,10 @@ class Main extends PluginBase {
                     $a->Zip = $args['Zip'];
                     $a->Zip4 = $args['Zip4'];
                     $a->LegalDescription = $args['LegalDescription'];
-                    $a->County = $a['County'];
+                    $a->County = $args['County'];
+                    error_log("Just before altering: ".print_r($a, true));
+                    $a->Save();
+                    $buffer['property'] = $a->ToArray();
                     error_log("After altering: ".print_r($a, true));
                 } catch (Exception $ex) {
                     error_log(print_r($ex, true));

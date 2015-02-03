@@ -65,7 +65,7 @@ abstract class Base {
             if(!$this->Dirty()) { return $this; }
             $sql = $sqlStart." ".static::TableName()." SET";
             foreach(array_keys($this->_nData) as $col) { $sql .= " `$col` = :$col,"; }
-            $sql = rtrim($sql, ',')." ".$sqlEnd; 
+            $sql = preg_replace('/,$/', '', $sql)." ".$sqlEnd;
             #error_log($sql);
             $conn = Connection\Factory::Get()->query($sql);
             foreach($this->_nData as $col => $val) {
@@ -97,8 +97,8 @@ abstract class Base {
         $where = '';
         $count = 0;
         foreach($this->_data as $col => $val) {
-            if($val) {
-                $where .= "`$col` = ".(is_numeric($val) ? $val : "'$val'")." AND ";
+            if($val && strlen($val) < 64) {
+                $where .= "`$col` = ".((is_numeric($val) && $val + 0 == $val) ? $val : Connection\Factory::Get()->quote($val))." AND ";
                 $count++;
             }
             if($count >= 10) { break; }
