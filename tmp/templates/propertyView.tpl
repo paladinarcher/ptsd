@@ -4,17 +4,75 @@
     <div class="link zillow"><a href="http://www.zillow.com/homes/{$property.HouseNumber}-{$property.Street}-{$property.City}%2C-{$property.State}-{$property.Zip}_rb/" target="_blank"><img src="images/icon_zillow.png" alt="Zillow" /></a></div>
     <div class="link county"></div>
 </div>
-<div class='PropertyInfo' data-property="{$property|json_encode}">
+<div class='PropertyInfo' data-property="{$property|json_encode|escape}">
     <ul class='propertyImages' id='propertyImages'>
-        {foreach from=$property.images item=image}
+        {foreach from=$property.Images item=image}
             <li><a target="_blank" href="images/properties/{$image.File}"><img src='images/properties/thumb_{$image.File}' title='{$image.Name}'/></a></li>
         {/foreach}
         <li id='addImage' class='addImage'>
             <img src='images/add-image.png' />
         </li>
     </ul>
+    <div class="panel panel-default Step Notes" style='margin-left: 520px;'>
+        <div class="panel-heading">To do list</div>
+        <div class="panel-body">
+            <div class="list-group">
+                {foreach from=$property.Steps item=step}
+                <a href="#" class="list-group-item StepItem{if $step.CompletedOn} Completed{/if}" data-step='{$step|json_encode|escape}'>
+                    <span class="shortDueDate">{if $step.DueDate}{$step.DueDate}{/if}</span>
+                    <span class="shortStartedDate">{if $step.StartedOn}{$step.StartedOn}{/if}</span>
+                    <span class="shortCompletedDate">{if $step.CompletedOn}{$step.CompletedOn}{/if}</span>
+                    <div class="StepShort">
+                        <h4 class="list-group-item-heading StepName">{$step.Name}</h4>
+                        <p class="list-group-item-text shortDescription">{$step.Description|truncate:60:"...":true}</p>
+                    </div>
+                    <div class="additionalDetails">
+                        <form >
+                            <div class="form-group">
+                                <label for="args[name]">Title</label>
+                                <input type="text" name="args[name]" class="form-control list-group-item-heading StepName" value="{$step.Name}" />
+                            </div>
+                            <div class="form-group">
+                                <label for="args[desc]">Description</label>
+                                <textarea class="form-control list-group-item-text fullDescription" style="height:200px;" name="args[desc]">{$step.Description}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="args[duedate]">Due Date</label>
+                                <div class='input-group date duedatepicker'>
+                                    <input type='text' class="form-control" name='args[duedate]' value="{$step.DueDate}" />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="args[starton]">Start Date</label>
+                                <div class='input-group date startdatepicker'>
+                                    <input type='text' class="form-control" name='args[starton]' value="{$step.StartedOn}" />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="args[completedon]">Completed Date</label>
+                                <div class='input-group date completeddatepicker'>
+                                    <input type='text' class="form-control" name='args[completedon]' value="{$step.CompletedOn}" />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="list-group-item-text fullAssignedTo"></p>
+                        </form>
+                    </div>
+                </a>
+                {/foreach}
+                <a href="#" id='AddStep' class="list-group-item list-group-item-info">
+                    <h4 class="list-group-item-heading">Add Task</h4>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="modal fade" id="AddressEdit" tabindex="-1" role="dialog" aria-labelledby="addressLavel" aria-hidden="true">
+<div class="modal fade" id="AddressEdit" tabindex="-1" role="dialog" aria-labelledby="addressLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -110,6 +168,54 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="AddStepModal" tabindex="-1" role="dialog" aria-labelledby="addStepLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="addStepLabel">Add Task</h4>
+      </div>
+      <div class="modal-body">
+        <form action="json.php" method="post" enctype="multipart/form-data" id="AddStepForm">
+            <div class='form-group'>
+                <input type='hidden' name='mod' value='Plugins\Main' />
+                <input type='hidden' name='cmd' value='addStep' />
+                <input type='hidden' name='args[pid]' value='{$property.ID}' />
+                <div class='form-group'>
+                    <label for="args[name]">Title</label>
+                    <input type='text' class='form-control' name='args[name]' style='text-transform:uppercase;' />
+                    <!--<textarea name='args[desc]' class="form-control" style='text-transform: uppercase;width:100%;height:200px;'></textarea>-->
+                </div>
+                <div class='form-group'>
+                    <label for="args[starton]">Start On</label>
+                    <div class='input-group date' id='datetimepicker2'>
+                        <input type='text' class="form-control" name='args[starton]' />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class='form-group'>
+                    <label for="args[duedate]">Due Date</label>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' class="form-control" name='args[duedate]' />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class='form-group'>
+                    <label for="args[desc]">Description</label>
+                    <textarea name='args[desc]' class="form-control" style='text-transform: uppercase;width:100%;height:200px;'></textarea>
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-loading-text="Adding..." id='AddStepFormBtn'>Add Task</button>
+      </div>
+    </div>
+  </div>
+</div>
 <pre>{$test}</pre>
 <script type="text/javascript" src="js/form-master/jquery.form.js"></script>
 <script type="text/javascript">
@@ -140,10 +246,70 @@ $(document).ready(function() {
             $(this).data('imgsrc');
         }
     });
+    $('.StepItem').each(function () {
+        var s = $(this).data('step');
+        var m;
+        var now = moment();
+        if(s.DueDate) {
+            m = moment(s.DueDate);
+            $(".shortDueDate", this).html("due "+m.from(now));
+            $(".fullDueDate", this).html("due "+m.format("llll")+" ("+m.from(now)+")");
+        }
+        if(s.CompletedOn) {
+            m = moment(s.CompletedOn);
+            $(".shortCompletedDate", this).html("due "+m.from(now));
+            $(".fullCompletedDate", this).html("completed "+m.format("llll")+" ("+m.from(now)+")");
+        }
+        if(s.StartedOn) {
+            var m = moment(s.StartedOn);
+            $(".shortStartedDate", this).html("start"+(m.diff(now) > 0 ? "s":"ed")+" "+m.from(now));
+            $(".fullStartedDate", this).html("start"+(m.diff(now) > 0 ? "s":"ed")+" on "+m.format("llll")+" ("+m.from(now)+")");
+        }
+        $(this).addClass('list-group-item-success');
+        console.log(s);
+    }).click(function () {
+        if(!$(".additionalDetails",this).is(":visible")) {
+            $(".StepItem .StepShort").show(0);
+            $(".StepItem .additionalDetails").hide(200);
+            $(".StepShort", this).hide(0);
+            $(".additionalDetails", this).show(200);
+        }
+        return false;
+    });
+    $('#datetimepicker1, #datetimepicker2').datetimepicker({ format: "YYYY-MM-DD HH:mm" });
     $('#fotoUpload').modal({ show:false });
     $('#AddressEdit').modal({ show:false });
+    $('#AddStepModal').modal({ show:false });
+    $('#AddStep').click(function () {
+        $('#AddStepModal').modal('show');
+        return false;
+    });
+    $('#AddStepFormBtn').click(function () {
+        $('#AddStepForm input,textarea').each(function () { if(this.name.substring(0,5) === 'args[') { this.value = this.value.toUpperCase(); } });
+        $('#AddStepFormBtn').button('loading');
+        $('#AddStepForm').submit();
+    });
+    $('#AddStepForm').submit(function () {
+        $(this).ajaxSubmit({
+            //target:   '#output',   // target element(s) to be updated with server response 
+            dataType:'json',
+            beforeSubmit:  function (arr, $form, options) {
+                console.log(arr, $form, options); 
+            },  // pre-submit callback 
+            resetForm: false,        // reset the form after successful submit 
+            success: function (responseTxt) {
+                
+                $('#AddStepFormBtn').button('reset');
+                $('#AddStepModal').modal('hide');
+                console.log(responseTxt);
+                
+                location.reload();
+            }
+        });
+        return false;
+    });
     $('#SaveAddress').click(function () {
-        $('#EditAddress input,textarea').each(function () { if(this.name.substring(0,5) == 'args[') { this.value = this.value.toUpperCase(); } });
+        $('#EditAddress input,textarea').each(function () { if(this.name.substring(0,5) === 'args[') { this.value = this.value.toUpperCase(); } });
         var fullStreet = $('#tmpstreet').val().trim();
         $('input[name="args[HouseNumber]"]').val(fullStreet.substring(0, fullStreet.indexOf(' ')));
         $('input[name="args[Street]"]').val(fullStreet.substring(fullStreet.indexOf(' ')+1));

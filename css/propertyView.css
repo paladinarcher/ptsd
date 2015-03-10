@@ -34,16 +34,16 @@ ul.propertyImages {
     list-style-type: none;
     margin: 0 20px 20px 0;
     padding: 0;
+    max-width: 500px;
 }
 ul.propertyImages li {
-    margin: 5px 0 0 0;
+    margin: 5px 0 0 5px;
     cursor: pointer;
     float:left;
-    clear:left;
 }
 ul.propertyImages img {
-    height: 84px;
-    width: 150px;
+    height: 90px;
+    width: 160px;
 }
 ul.propertyImages li:first-child {
     margin:0;
@@ -54,4 +54,35 @@ ul.propertyImages li:first-child img {
 }
 .addImage {
     background-color: #E0E0E0;
+}
+
+.Step .panel-body:after {
+    clear:right;
+}
+.StepItem .shortDueDate {
+    position:absolute;
+    top:3px;
+    right:5px;
+    font-size: .75em;
+    color:grey;
+}
+.StepItem .shortStartedDate {
+    position:absolute;
+    top:13px;
+    right:5px;
+    font-size: .75em;
+    color:grey;
+}
+.StepItem .shortCompletedDate {
+    position:absolute;
+    top:23px;
+    right:5px;
+    font-size: .75em;
+    color:grey;
+}
+.additionalDetails {
+    display:none;
+}
+.Step .Completed {
+    display:none;
 }

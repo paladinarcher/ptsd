@@ -28,6 +28,22 @@ class Main extends PluginBase {
         
         $this->_govnah->Serializer()->SetOption('maintemplate', 'tmp/templates/mainpage.tpl');
         switch($subs[1]) {
+            case "addStep":
+                try {
+                    $p = new \Common\Address($args['pid']);
+                } catch (\Exceptions\ItemNotFound $ex) {
+                    error_log(print_r($ex, true));
+                    $this->_dashboard($buffer);
+                    break;
+                }
+                $step = $p->AddStep($args['name'], $args['desc'], $args['starton'], $args['duedate']);
+                if($step) {
+                    $buffer['step'] = $step->ToArray();
+                } else {
+                    error_log(print_r($step, true));
+                    $buffer['error'] = "Didn't like making that step, I guess";
+                }
+                break;
             case "showProperty" :
                 try {
                     $p = new \Common\Address($args['pid']);
@@ -44,6 +60,8 @@ class Main extends PluginBase {
                 $buffer['property'] = $p->ToArray();
                 $this->_govnah->Serializer()->SetOption('subpage', 'tmp/templates/propertyView.tpl');
                 break;
+            case "AddAddress":
+                $args['pid'] = null;
             case "EditAddress":
                 try {
                     $a = new \Common\Address($args['pid']);

@@ -39,53 +39,53 @@ abstract class Base {
     protected $_nData = array();
 
     public function __construct($arrId = null) {
-            if($arrId === null) { return; }
-            if(is_array($arrId)) {
-                    $this->_data = $arrId;
-            } else {
-                    $this->_loadById($arrId);
-            }
+        if($arrId === null) { return; }
+        if(is_array($arrId)) {
+            $this->_data = $arrId;
+        } else {
+            $this->_loadById($arrId);
+        }
     }
     public function __get($name) { 
-            if(isset($this->_nData[$name])) { return $this->_nData[$name]; }
-            if(isset($this->_data[$name])) { return $this->_data[$name]; }
-            return null;
+        if(isset($this->_nData[$name])) { return $this->_nData[$name]; }
+        if(isset($this->_data[$name])) { return $this->_data[$name]; }
+        return null;
     }
     public function __set($name, $value) {
-            $this->_nData[$name] = $value;
+        $this->_nData[$name] = $value;
     }
     public function Insert() {
-            return $this->_sqlSave("INSERT INTO");
+        return $this->_sqlSave("INSERT INTO");
     }
     public function Save() {
-            if($this->IsNew()) { return $this->Insert(); }
-            return $this->_sqlSave("UPDATE", "WHERE ".$this->_where());
+        if($this->IsNew()) { return $this->Insert(); }
+        return $this->_sqlSave("UPDATE", "WHERE ".$this->_where());
     }
     protected function _sqlSave($sqlStart, $sqlEnd = '') {
-            if(!$this->Dirty()) { return $this; }
-            $sql = $sqlStart." ".static::TableName()." SET";
-            foreach(array_keys($this->_nData) as $col) { $sql .= " `$col` = :$col,"; }
-            $sql = preg_replace('/,$/', '', $sql)." ".$sqlEnd;
-            #error_log($sql);
-            $conn = Connection\Factory::Get()->query($sql);
-            foreach($this->_nData as $col => $val) {
-                #error_log("binding :$col => $val");
-                $conn->bind(":$col", $val);
+        if(!$this->Dirty()) { return $this; }
+        $sql = $sqlStart." ".static::TableName()." SET";
+        foreach(array_keys($this->_nData) as $col) { $sql .= " `$col` = :$col,"; }
+        $sql = preg_replace('/,$/', '', $sql)." ".$sqlEnd;
+        #error_log($sql);
+        $conn = Connection\Factory::Get()->query($sql);
+        foreach($this->_nData as $col => $val) {
+            #error_log("binding :$col => $val");
+            $conn->bind(":$col", $val);
+        }
+        #$q->debugDumpParams();
+        if($conn->execute()) {
+            if($conn->rowCount() < 1) { error_log(" ZERO ROWS AFFECTED! "); }
+            if(!$this->ID) {
+                $lastId = $conn->lastInsertId();
+                $this->ID = $lastId;
             }
-            #$q->debugDumpParams();
-            if($conn->execute()) {
-                if($conn->rowCount() < 1) { error_log(" ZERO ROWS AFFECTED! "); }
-                if(!$this->ID) {
-                    $lastId = $conn->lastInsertId();
-                    $this->ID = $lastId;
-                }
-                error_log(print_r($conn->errorInfo(), true));
-                $this->_data = array_merge($this->_data, $this->_nData);
-                $this->_nData = array();
-            } else {
-                error_log(print_r($conn->errorInfo(), true));
-            }
-            return $this;
+            error_log(print_r($conn->errorInfo(), true));
+            $this->_data = array_merge($this->_data, $this->_nData);
+            $this->_nData = array();
+        } else {
+            error_log(print_r($conn->errorInfo(), true));
+        }
+        return $this;
     }
     public function IsNew() { return empty($this->_data); }
     public function Dirty() { return !empty($this->_nData); }
