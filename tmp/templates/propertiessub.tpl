@@ -1,7 +1,7 @@
       <div class="row">
         {foreach from=$properties item=property}
         <div class="col-md-6">
-            <div class='propertyCard thumbnail' data-property='{$property|json_encode}'>
+            <div class='propertyCard thumbnail' data-property='{$property|json_encode|escape}'>
                 {if $property.ImageFile[0]}
               <img data-src="holder.js/150x84" class="img-thumbnail" alt="150x84" src="images/properties/icon_{$property.ImageFile[0]}" data-holder-rendered="true" style="width: 150px; height: 84px;">
                 {else}
